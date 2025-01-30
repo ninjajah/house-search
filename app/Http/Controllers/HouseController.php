@@ -3,38 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\House;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class HouseController extends Controller
 {
-    public function search(Request $request)
+    public function search(Request $request): JsonResponse
     {
         $query = House::query();
 
-        if ($request->has('name')) {
+        if ($request->filled('name')) {
             $query->where('name', 'like', '%' . $request->input('name') . '%');
         }
 
-        if ($request->has('bedrooms')) {
+        if ($request->filled('bedrooms')) {
             $query->where('bedrooms', $request->input('bedrooms'));
         }
-        if ($request->has('bathrooms')) {
+        if ($request->filled('bathrooms')) {
             $query->where('bathrooms', $request->input('bathrooms'));
         }
-        if ($request->has('storeys')) {
+        if ($request->filled('storeys')) {
             $query->where('storeys', $request->input('storeys'));
         }
-        if ($request->has('garages')) {
+        if ($request->filled('garages')) {
             $query->where('garages', $request->input('garages'));
         }
 
-        if ($request->has('price_min')) {
+        if ($request->filled('price_min')) {
             $query->where('price', '>=', $request->input('price_min'));
         }
-        if ($request->has('price_max')) {
+        if ($request->filled('price_max')) {
             $query->where('price', '<=', $request->input('price_max'));
         }
 
-        return response()->json(['success' => true, 'data'=>$query->get()]);
+        return response()->json(['success' => true, 'houses'=>$query->get()]);
     }
 }
